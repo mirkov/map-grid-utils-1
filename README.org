@@ -1,0 +1,344 @@
+#+title: ~map-grid-utils~ package
+
+* Introduction
+
+  This library provides several utility functions and macros on top of
+  grid mapping functions ~map-grid~ and ~map-n-grids~ found in Liam
+  Healy's ~grid~ library.  They all operate on vectors (grid of rank
+  1), producing (with one exception) vectors.
+
+  These macros and functions are syntactic sugar: they facilitate
+  mapping of functions over vector arguments and mixed kind arguments
+  (combinations of vectors and scalars).
+
+  The macros and functions were in part motivated by facilities
+  offered by matrix-oriented languages such as IDL (I am not familiar
+  with MATLAB's capabilities).  The utilities do not fully mimic their
+  syntax.  Instead, I tried to offer adequate functionality while
+  conforming to Common Lisp coding and usage conventions.
+
+  The following table summarizes the macros and functions (F/M refer
+  to functions or macros respectively):
+
+  | Name               | Type | CL cousin | Returns   |
+  |--------------------+------+-----------+-----------+
+  | ~mapgrid~          | F    | ~mapcar~  | Vector    |
+  | ~mapg~             | F    | ~mapc~    | First arg |
+  | ~mapgrid-ma[-1]~   | M    | -         | Vector    |
+  | ~mapgrid-man[-1]~  | M    | -         | Matrix    |
+
+  This library is subject to further improvement and interface
+  modifications.  Thus, when using it, it is wise to specify the
+  version of the library.
+  
+
+* Grid types
+
+  The library operates on CL arrays and ~grid~ foreign-arrays of
+  rank 1.  We refer to both types as grids or vectors.  The result
+  type is determined by [[id:4fe2plm0etf0][~*array-type*~]].
+
+* Function counterparts to ~mapcar~ and ~mapc~
+
+  ~mapgrid~ and ~mapg~ are direct counterparts to ~mapcar~ and ~mapc~.
+  They map a function over their arguments, which are all vectors.
+
+  
+
+* Mapping macros over mixed kind arguments
+
+  Two macro families allow for mapping a function of several arguments
+  over a mix of scalars and vectors (we refer to this as kinds).
+
+** ~mapgrid-ma~ or ~mapgrid-ma-1~ macros
+
+   With ~mapgrid-ma~ or ~mapgrid-ma-1~ one can map ~(expt x y)~ for a
+   fixed ~x~ and several values of ~y~.  The two macros offer the same
+   functionality, but with a slightly different interface, discussed
+   below.
+
+** Nested mappings with ~mapgrid-man~ and ~mapgrid-man-1~ macros
+
+   With these macros, the function mapped over two /vectors/ ~grid-0~
+   and ~grid-1~ returns a /matrix/.  A matrix element /ij/ is result
+   of the function call on /grid-0_i/ and /grid-1_j/.  Again
+   ~mapgrid-man~ and ~mapgrid-man-1~ offer the same functionality but
+   with a slightly different interface.  This kind of mapping is not
+   provided by IDL as far as I know.
+
+** Interface to mixed-kind mappings
+
+   In IDL, a call to a function ~f(x,y,z)~ can contain a mixture of
+   scalars and (congruent) vectors or arrays.  The underlying
+   machinery will figure out how to call the function so that it
+   returns a result (vector or array) which is a result of mapping
+   over successive vector/array elements, keeping scalars constant.
+
+   ~map-grid-utils~ offer a less intelligent user interface: the user
+   has to specify which argument is a vector (all other arguments are
+   assumed scalars).  Vector arguments are declared by pre-pending "@!",
+   "@0", "@1" before the vector names.  The macro code removes these
+   prefixes and generates the variable names.  This is discussed next.
+
+** Specifying mixed-kind mapping arguments
+
+   We restrict whether the arguments are variables or s-expressions.
+   The following discussion uses ~mapgrid-ma[-1]~ as example, but
+   applies to ~mapgrid-man[-1]~ as well.
+
+   ~mapgrid-man~ only accepts symbols that evaluate to variables, and
+   is used as follows:
+   #+BEGIN_SRC lisp
+	(mapgrid-man #'foo a @!b c @!d)
+   #+END_SRC
+   Here ~a~ and ~d~ are scalar variables or s-expressions and ~b~ and
+   ~d~ are congruent vectors.
+
+   If we wanted to use s-expressions instead of vectors, we would
+   instead use ~mapgrid-man-1~:
+   #+BEGIN_SRC lisp
+     (mapgrid-man-1 (foo a @!b c @!d) (s-expr1 ...) (s-expr2 ...))
+   #+END_SRC
+   Here ~@!b~ and ~@!d~ are placeholders to be filled with the results
+   of s-expressions.
+
+   Since ~mapgrid-ma1,2~ map over vectors in parallel we specify all the
+   vectors with "@!".  But for the nested mapping, we need to specify
+   which argument varies along the matrix row, and which over the matrix
+   column.  We use "@0" for the argument that varies along rows and
+   "@1" for the argument that varies along the column.  So the two
+   calls
+   #+BEGIN_SRC lisp
+	(mapgrid-man #'foo @0x y @1z)
+	(mapgrid-man #'foo @1x y @0z)
+   #+END_SRC
+   produce results that are transpose of each other.
+
+   
+   Scalar arguments must always be variables, never s-expressions.
+   
+
+   
+
+* ~map-grid-utils~ dictionary
+
+** Variable ~*array-type*~
+   :PROPERTIES:
+   :ID:       4fe2plm0etf0
+   :END:
+   
+*** Value type
+    a symbol
+
+*** Initial value
+    'array
+
+*** Description
+    :PROPERTIES:
+    :ID:       8if9yrn0ltf0
+    :END:
+    The value of ~*array-type*~ has effect on the type of vector that
+    ~mapgrid~ and ~mapg~ will return.  The allowed values are:
+    - 'array -- return a common-lisp vector or array
+    - 'grid:foreign-array -- a foreign array
+
+** Variable ~*float-type*~
+   :PROPERTIES:
+   :ID:       wughcmm0etf0
+   :END:
+
+*** Value type
+    a symbol
+
+*** Initial value
+    'DOUBLE-FLOAT
+
+*** Description
+    The value of ~*float-type*~ has effect on the type of float that
+    vectors created by ~mapgrid~ and ~mapg~ will contain.  The allowed
+    values are
+    - t -- any type
+    - 'float -- a single float
+    - 'double-float -- a double float
+
+      
+    The 'double-float type is mandatory for vectors that will be used as
+    arguments to GSLL's functions.
+    
+** Variables ~*v1*~, ~*v2*~, ~*v3*~
+
+*** Value type
+    - grid vectors
+
+*** Initial values
+    - ~*v1*~ :: A vector containing [0d0 1d0 2d 3d0]
+    - ~*v2*~ :: A vector containing [10d0 11d0 12d0 13d0]
+    - ~*v3*~ :: A vector containing [1d0 2d0]
+      
+      
+    The vector type (~array~ or ~grid:foreign-array~) depends on the value
+    stored in ~*array-type*~.
+
+*** Description
+    Variables used for testing and examples.  They are /not/ exported.
+    
+** ~mapgrid~, ~mapg~
+*** Syntax
+    - *mapgrid* function &rest vectors+ => result-vector
+    - *mapg* function &rest vectors+ => vector-1
+*** Arguments and Values
+    - /function/ -- a function designator or a lambda expression that
+      takes as many arguments as there are vectors
+    - /vector/ -- either Common Lisp or grid vector
+    - /result-vector/ -- a Common Lisp or grid vector
+    
+*** Description
+    The mapping operation involves applying function to successive
+    sets of arguments in which one argument is obtained from each
+    vector.
+
+    ~mapgrid~ accumulates the results into a vector. 
+
+    ~mapg~ returns the first vector.  It is intended for side effects of
+    the function calls.
+
+    The function call results are coerced to [[id:wughcmm0etf0][~*float-type*~]].
+
+    The vector type is determined by [[id:4fe2plm0etf0][~*array-type*~]].
+
+** ~mapgrid-xa1~, ~mapgrid-xa2~
+
+*** Syntax
+    - (*mapgrid-ma* function &rest arguments1) => result-vector
+    - (*mapgrid-ma-1* (function &rest arguments2) &rest vectors) => result-vector
+
+*** Arguments and values
+    - /function/ -- a function designator or a lambda expression
+    - /arguments1/ -- combination of scalars and vectors, vectors being marked with a
+      @! prefix
+    - /arguments2/ -- scalars or dummy symbols prefixed by @!
+    - /vectors/ -- one or more grid vectors
+    - /result-vector/ -- a grid vector
+
+*** Description
+    The macros map ~function~ over vectors.  At each call, the
+    function's arguments are constructed from the scalar arguments and
+    successive vector elements.
+
+    The user tags the vectors to the macros by pre-pending the ~@!~
+    prefix before each symbol name.
+
+    ~arguments1~ and ~arguments2~ cannot have s-expressions.  All
+    arguments must be existing variables.  S-expressions can be used
+    as part of the ~vectors~ argument to ~mapgrid-ma~.
+
+*** Examples
+    A couple examples using lists may explain the macros better
+
+    #+BEGIN_SRC lisp
+(mapgrid-ma #'expt 5d0 @!*V1*)
+    #+END_SRC
+    => #m[1d0 5d0 25d0 125d0]
+
+    is equivalent to (using lists instead of grids)
+    #+BEGIN_SRC lisp
+      (mapcar (lambda (arg)
+                (expt 5d0 arg))
+              '(0d0 1d0 2d0 3d0))
+    #+END_SRC
+
+    #+BEGIN_SRC lisp
+(mapgrid-ma-1 (expt @!a @!b) *V1* *V0*)
+    #+END_SRC
+    => #m[0d0 11d0 144d0 2197d0]
+    is equivalent to
+    #+BEGIN_SRC lisp
+      (mapcar (lambda (x1 x0)
+                (expt x1 x2))
+              '(10d0 11d0 12d0 13d0)
+              ('0d0 1d0 2d0 3d0))    
+    #+END_SRC
+
+    Now suppose that we did not have *v1* but had an s-expression
+    instead.  Then, we cannot use ~mapgrid-ma~, but must use
+    ~mapgrid-ma-1~
+    #+BEGIN_SRC lisp
+      (mapgrid-man-1 (expt 5d0 @!v1)
+                   (make-grid `((,*array-type* 4) ,*float-type*)
+                              :initial-contents '(0d0 1d0 2d0 3d0)))
+    #+END_SRC
+
+    
+
+** ~mapgrid-man~, ~mapgrid-man-1~
+*** Syntax
+    - (*mapgrid-man* function &rest arguments) => result-vector
+    - (*mapgrid-man-1* (function &rest arguments) &rest vectors) =>
+      result-vector
+
+
+*** Arguments and values
+    - /function/ -- a function designator or a lambda form
+    - /arguments/ -- a mixture of scalars and two vectors, the vectors
+      being marked with a @0 and @1 prefixes
+    - /result-vector/ -- a Common Lisp or grid matrix
+
+*** Description
+    ~mapgrid-man~, ~mapgrid-man-1~ performs a nested mapping with the
+    results stored in a matrix.  The first matrix row is obtained by
+    mapping the function over the @1 labeled vector, taking the remaining
+    arguments from the scalars, and first element of the @0 vector.
+    The following rows is obtained by repeating this scan, but in
+    successive scans taking successive elements of the @1 vector.
+
+    /Arguments/ cannot be forms that evaluate into a scalar or vector.
+    They must be symbols whose value is a scalar or a vector.  
+
+*** Examples
+
+    The following examples show calls of functions that require only
+    two arguments, and both are vectors:
+    
+    #+BEGIN_SRC lisp
+(mapgrid-man (expt @0*v2* @1*V3*))
+    #+END_SRC
+    => #m2[[10d0 11d0 12d0 13d0]
+    [100d0 121d0 144d0 169d0]
+    
+
+    #+BEGIN_SRC lisp
+(mapgrid-man (expt @1*V2* @0*v3*))
+    #+END_SRC
+    => #m[[10d0 100d0
+    [11d0 121d0]
+    [12d0 144d0]
+    [13d0 169d0]]
+
+    The macro can handle calls of mixed arguments, such as
+    #+BEGIN_SRC lisp
+(mapgrid-man (foo @0*v2* bar @1*V3*))
+    #+END_SRC
+    where ~bar~ evaluates to a scalar.
+    
+
+
+* Implementation notes
+
+  The philosophy was to take as much of the calling and documentation
+  conventions from Common Lisp and hyperspec as possible.
+
+  ~lisp-unit~ is used for function tests.  Almost all functions have
+  tests associated with them.  These tests also serve as documentation
+  regarding the function usage.  
+
+  
+
+* Todo
+  - Implement functionality to return compiled functions that will
+    accept mixed-kind arguments
+  - Investigate usage of the ~once-only~ macro to process scalar
+    arguments in the mixed argument macros.
+  - Clean-up code.  Some of it may contained remains of old
+    development.
+  - Investigate how to allow s-expressions as arguments to mapping
+    macros

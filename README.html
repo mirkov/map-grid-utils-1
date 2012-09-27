@@ -1,0 +1,908 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title><code>map-grid-utils</code> package</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="title" content="<code>map-grid-utils</code> package"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2012-08-04 22:18:31 "/>
+<meta name="author" content="Mirko Vukovic"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title"><code>map-grid-utils</code> package</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Introduction</a></li>
+<li><a href="#sec-2">2 Grid types</a></li>
+<li><a href="#sec-3">3 Function counterparts to <code>mapcar</code> and <code>mapc</code></a></li>
+<li><a href="#sec-4">4 Mapping macros over mixed kind arguments</a>
+<ul>
+<li><a href="#sec-4-1">4.1 <code>mapgrid-ma</code> or <code>mapgrid-ma-1</code> macros</a></li>
+<li><a href="#sec-4-2">4.2 Nested mappings with <code>mapgrid-man</code> and <code>mapgrid-man-1</code> macros</a></li>
+<li><a href="#sec-4-3">4.3 Interface to mixed-kind mappings</a></li>
+<li><a href="#sec-4-4">4.4 Specifying mixed-kind mapping arguments</a></li>
+</ul>
+</li>
+<li><a href="#sec-5">5 <code>map-grid-utils</code> dictionary</a>
+<ul>
+<li><a href="#sec-5-1">5.1 Variable <code>*array-type*</code></a>
+<ul>
+<li><a href="#sec-5-1-1">5.1.1 Value type</a></li>
+<li><a href="#sec-5-1-2">5.1.2 Initial value</a></li>
+<li><a href="#sec-5-1-3">5.1.3 Description</a></li>
+</ul>
+</li>
+<li><a href="#sec-5-2">5.2 Variable <code>*float-type*</code></a>
+<ul>
+<li><a href="#sec-5-2-1">5.2.1 Value type</a></li>
+<li><a href="#sec-5-2-2">5.2.2 Initial value</a></li>
+<li><a href="#sec-5-2-3">5.2.3 Description</a></li>
+</ul>
+</li>
+<li><a href="#sec-5-3">5.3 Variables <code>*v1*</code>, <code>*v2*</code>, <code>*v3*</code></a>
+<ul>
+<li><a href="#sec-5-3-1">5.3.1 Value type</a></li>
+<li><a href="#sec-5-3-2">5.3.2 Initial values</a></li>
+<li><a href="#sec-5-3-3">5.3.3 Description</a></li>
+</ul>
+</li>
+<li><a href="#sec-5-4">5.4 <code>mapgrid</code>, <code>mapg</code></a>
+<ul>
+<li><a href="#sec-5-4-1">5.4.1 Syntax</a></li>
+<li><a href="#sec-5-4-2">5.4.2 Arguments and Values</a></li>
+<li><a href="#sec-5-4-3">5.4.3 Description</a></li>
+</ul>
+</li>
+<li><a href="#sec-5-5">5.5 <code>mapgrid-xa1</code>, <code>mapgrid-xa2</code></a>
+<ul>
+<li><a href="#sec-5-5-1">5.5.1 Syntax</a></li>
+<li><a href="#sec-5-5-2">5.5.2 Arguments and values</a></li>
+<li><a href="#sec-5-5-3">5.5.3 Description</a></li>
+<li><a href="#sec-5-5-4">5.5.4 Examples</a></li>
+</ul>
+</li>
+<li><a href="#sec-5-6">5.6 <code>mapgrid-man</code>, <code>mapgrid-man-1</code></a>
+<ul>
+<li><a href="#sec-5-6-1">5.6.1 Syntax</a></li>
+<li><a href="#sec-5-6-2">5.6.2 Arguments and values</a></li>
+<li><a href="#sec-5-6-3">5.6.3 Description</a></li>
+<li><a href="#sec-5-6-4">5.6.4 Examples</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-6">6 Implementation notes</a></li>
+<li><a href="#sec-7">7 Todo</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+
+
+<p>
+  This library provides several utility functions and macros on top of
+  grid mapping functions <code>map-grid</code> and <code>map-n-grids</code> found in Liam
+  Healy's <code>grid</code> library.  They all operate on vectors (grid of rank
+  1), producing (with one exception) vectors.
+</p>
+<p>
+  These macros and functions are syntactic sugar: they facilitate
+  mapping of functions over vector arguments and mixed kind arguments
+  (combinations of vectors and scalars).
+</p>
+<p>
+  The macros and functions were in part motivated by facilities
+  offered by matrix-oriented languages such as IDL (I am not familiar
+  with MATLAB's capabilities).  The utilities do not fully mimic their
+  syntax.  Instead, I tried to offer adequate functionality while
+  conforming to Common Lisp coding and usage conventions.
+</p>
+<p>
+  The following table summarizes the macros and functions (F/M refer
+  to functions or macros respectively):
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
+<colgroup><col class="left" /><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">Name</th><th scope="col" class="left">Type</th><th scope="col" class="left">CL cousin</th><th scope="col" class="left">Returns</th></tr>
+</thead>
+<tbody>
+<tr><td class="left"><code>mapgrid</code></td><td class="left">F</td><td class="left"><code>mapcar</code></td><td class="left">Vector</td></tr>
+<tr><td class="left"><code>mapg</code></td><td class="left">F</td><td class="left"><code>mapc</code></td><td class="left">First arg</td></tr>
+<tr><td class="left"><code>mapgrid-ma[-1]</code></td><td class="left">M</td><td class="left">-</td><td class="left">Vector</td></tr>
+<tr><td class="left"><code>mapgrid-man[-1]</code></td><td class="left">M</td><td class="left">-</td><td class="left">Matrix</td></tr>
+</tbody>
+</table>
+
+
+<p>
+  This library is subject to further improvement and interface
+  modifications.  Thus, when using it, it is wise to specify the
+  version of the library.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Grid types</h2>
+<div class="outline-text-2" id="text-2">
+
+
+<p>
+  The library operates on CL arrays and <code>grid</code> foreign-arrays of
+  rank 1.  We refer to both types as grids or vectors.  The result
+  type is determined by <a href="#sec-5-1"><code>*array-type*</code></a>.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Function counterparts to <code>mapcar</code> and <code>mapc</code></h2>
+<div class="outline-text-2" id="text-3">
+
+
+<p>
+  <code>mapgrid</code> and <code>mapg</code> are direct counterparts to <code>mapcar</code> and <code>mapc</code>.
+  They map a function over their arguments, which are all vectors.
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Mapping macros over mixed kind arguments</h2>
+<div class="outline-text-2" id="text-4">
+
+
+<p>
+  Two macro families allow for mapping a function of several arguments
+  over a mix of scalars and vectors (we refer to this as kinds).
+</p>
+
+</div>
+
+<div id="outline-container-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> <code>mapgrid-ma</code> or <code>mapgrid-ma-1</code> macros</h3>
+<div class="outline-text-3" id="text-4-1">
+
+
+<p>
+   With <code>mapgrid-ma</code> or <code>mapgrid-ma-1</code> one can map <code>(expt x y)</code> for a
+   fixed <code>x</code> and several values of <code>y</code>.  The two macros offer the same
+   functionality, but with a slightly different interface, discussed
+   below.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> Nested mappings with <code>mapgrid-man</code> and <code>mapgrid-man-1</code> macros</h3>
+<div class="outline-text-3" id="text-4-2">
+
+
+<p>
+   With these macros, the function mapped over two <i>vectors</i> <code>grid-0</code>
+   and <code>grid-1</code> returns a <i>matrix</i>.  A matrix element <i>ij</i> is result
+   of the function call on <i>grid-0<sub>i</sub></i> and <i>grid-1<sub>j</sub></i>.  Again
+   <code>mapgrid-man</code> and <code>mapgrid-man-1</code> offer the same functionality but
+   with a slightly different interface.  This kind of mapping is not
+   provided by IDL as far as I know.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-4-3" class="outline-3">
+<h3 id="sec-4-3"><span class="section-number-3">4.3</span> Interface to mixed-kind mappings</h3>
+<div class="outline-text-3" id="text-4-3">
+
+
+<p>
+   In IDL, a call to a function <code>f(x,y,z)</code> can contain a mixture of
+   scalars and (congruent) vectors or arrays.  The underlying
+   machinery will figure out how to call the function so that it
+   returns a result (vector or array) which is a result of mapping
+   over successive vector/array elements, keeping scalars constant.
+</p>
+<p>
+   <code>map-grid-utils</code> offer a less intelligent user interface: the user
+   has to specify which argument is a vector (all other arguments are
+   assumed scalars).  Vector arguments are declared by pre-pending "@!",
+   "@0", "@1" before the vector names.  The macro code removes these
+   prefixes and generates the variable names.  This is discussed next.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-4-4" class="outline-3">
+<h3 id="sec-4-4"><span class="section-number-3">4.4</span> Specifying mixed-kind mapping arguments</h3>
+<div class="outline-text-3" id="text-4-4">
+
+
+<p>
+   We restrict whether the arguments are variables or s-expressions.
+   The following discussion uses <code>mapgrid-ma[-1]</code> as example, but
+   applies to <code>mapgrid-man[-1]</code> as well.
+</p>
+<p>
+   <code>mapgrid-man</code> only accepts symbols that evaluate to variables, and
+   is used as follows:
+</p>
+
+
+<pre class="src src-lisp">(mapgrid-man #'foo a @!b c @!d)
+</pre>
+
+<p>
+   Here <code>a</code> and <code>d</code> are scalar variables or s-expressions and <code>b</code> and
+   <code>d</code> are congruent vectors.
+</p>
+<p>
+   If we wanted to use s-expressions instead of vectors, we would
+   instead use <code>mapgrid-man-1</code>:
+</p>
+
+
+<pre class="src src-lisp">(mapgrid-man-1 (foo a @!b c @!d) (s-expr1 ...) (s-expr2 ...))
+</pre>
+
+<p>
+   Here <code>@!b</code> and <code>@!d</code> are placeholders to be filled with the results
+   of s-expressions.
+</p>
+<p>
+   Since <code>mapgrid-ma1,2</code> map over vectors in parallel we specify all the
+   vectors with "@!".  But for the nested mapping, we need to specify
+   which argument varies along the matrix row, and which over the matrix
+   column.  We use "@0" for the argument that varies along rows and
+   "@1" for the argument that varies along the column.  So the two
+   calls
+</p>
+
+
+<pre class="src src-lisp">(mapgrid-man #'foo @0x y @1z)
+(mapgrid-man #'foo @1x y @0z)
+</pre>
+
+<p>
+   produce results that are transpose of each other.
+</p>
+
+<p>   
+   Scalar arguments must always be variables, never s-expressions.
+</p>
+
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> <code>map-grid-utils</code> dictionary</h2>
+<div class="outline-text-2" id="text-5">
+
+
+
+</div>
+
+<div id="outline-container-5-1" class="outline-3">
+<h3 id="sec-5-1"><a name="4fe2plm0etf0" id="4fe2plm0etf0"></a><span class="section-number-3">5.1</span> Variable <code>*array-type*</code></h3>
+<div class="outline-text-3" id="text-5-1">
+
+
+
+</div>
+
+<div id="outline-container-5-1-1" class="outline-4">
+<h4 id="sec-5-1-1"><span class="section-number-4">5.1.1</span> Value type</h4>
+<div class="outline-text-4" id="text-5-1-1">
+
+<p>    a symbol
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5-1-2" class="outline-4">
+<h4 id="sec-5-1-2"><span class="section-number-4">5.1.2</span> Initial value</h4>
+<div class="outline-text-4" id="text-5-1-2">
+
+<p>    'array
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5-1-3" class="outline-4">
+<h4 id="sec-5-1-3"><a name="8if9yrn0ltf0" id="8if9yrn0ltf0"></a><span class="section-number-4">5.1.3</span> Description</h4>
+<div class="outline-text-4" id="text-5-1-3">
+
+<p>    The value of <code>*array-type*</code> has effect on the type of vector that
+    <code>mapgrid</code> and <code>mapg</code> will return.  The allowed values are:
+</p><ul>
+<li>'array &ndash; return a common-lisp vector or array
+</li>
+<li>'grid:foreign-array &ndash; a foreign array
+</li>
+</ul>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5-2" class="outline-3">
+<h3 id="sec-5-2"><a name="wughcmm0etf0" id="wughcmm0etf0"></a><span class="section-number-3">5.2</span> Variable <code>*float-type*</code></h3>
+<div class="outline-text-3" id="text-5-2">
+
+
+
+</div>
+
+<div id="outline-container-5-2-1" class="outline-4">
+<h4 id="sec-5-2-1"><span class="section-number-4">5.2.1</span> Value type</h4>
+<div class="outline-text-4" id="text-5-2-1">
+
+<p>    a symbol
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5-2-2" class="outline-4">
+<h4 id="sec-5-2-2"><span class="section-number-4">5.2.2</span> Initial value</h4>
+<div class="outline-text-4" id="text-5-2-2">
+
+<p>    'DOUBLE-FLOAT
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5-2-3" class="outline-4">
+<h4 id="sec-5-2-3"><span class="section-number-4">5.2.3</span> Description</h4>
+<div class="outline-text-4" id="text-5-2-3">
+
+<p>    The value of <code>*float-type*</code> has effect on the type of float that
+    vectors created by <code>mapgrid</code> and <code>mapg</code> will contain.  The allowed
+    values are
+</p><ul>
+<li>t &ndash; any type
+</li>
+<li>'float &ndash; a single float
+</li>
+<li>'double-float &ndash; a double float
+</li>
+</ul>
+
+
+
+<p>      
+    The 'double-float type is mandatory for vectors that will be used as
+    arguments to GSLL's functions.
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5-3" class="outline-3">
+<h3 id="sec-5-3"><span class="section-number-3">5.3</span> Variables <code>*v1*</code>, <code>*v2*</code>, <code>*v3*</code></h3>
+<div class="outline-text-3" id="text-5-3">
+
+
+
+</div>
+
+<div id="outline-container-5-3-1" class="outline-4">
+<h4 id="sec-5-3-1"><span class="section-number-4">5.3.1</span> Value type</h4>
+<div class="outline-text-4" id="text-5-3-1">
+
+<ul>
+<li>grid vectors
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5-3-2" class="outline-4">
+<h4 id="sec-5-3-2"><span class="section-number-4">5.3.2</span> Initial values</h4>
+<div class="outline-text-4" id="text-5-3-2">
+
+<dl>
+<dt><code>*v1*</code></dt><dd>A vector containing [0d0 1d0 2d 3d0]
+</dd>
+<dt><code>*v2*</code></dt><dd>A vector containing [10d0 11d0 12d0 13d0]
+</dd>
+<dt><code>*v3*</code></dt><dd>A vector containing [1d0 2d0]
+</dd>
+</dl>
+
+
+
+<p>      
+    The vector type (<code>array</code> or <code>grid:foreign-array</code>) depends on the value
+    stored in <code>*array-type*</code>.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5-3-3" class="outline-4">
+<h4 id="sec-5-3-3"><span class="section-number-4">5.3.3</span> Description</h4>
+<div class="outline-text-4" id="text-5-3-3">
+
+<p>    Variables used for testing and examples.  They are <i>not</i> exported.
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5-4" class="outline-3">
+<h3 id="sec-5-4"><span class="section-number-3">5.4</span> <code>mapgrid</code>, <code>mapg</code></h3>
+<div class="outline-text-3" id="text-5-4">
+
+
+</div>
+
+<div id="outline-container-5-4-1" class="outline-4">
+<h4 id="sec-5-4-1"><span class="section-number-4">5.4.1</span> Syntax</h4>
+<div class="outline-text-4" id="text-5-4-1">
+
+<ul>
+<li><b>mapgrid</b> function &amp;rest vectors+ =&gt; result-vector
+</li>
+<li><b>mapg</b> function &amp;rest vectors+ =&gt; vector-1
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-5-4-2" class="outline-4">
+<h4 id="sec-5-4-2"><span class="section-number-4">5.4.2</span> Arguments and Values</h4>
+<div class="outline-text-4" id="text-5-4-2">
+
+<ul>
+<li><i>function</i> &ndash; a function designator or a lambda expression that
+      takes as many arguments as there are vectors
+</li>
+<li><i>vector</i> &ndash; either Common Lisp or grid vector
+</li>
+<li><i>result-vector</i> &ndash; a Common Lisp or grid vector
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5-4-3" class="outline-4">
+<h4 id="sec-5-4-3"><span class="section-number-4">5.4.3</span> Description</h4>
+<div class="outline-text-4" id="text-5-4-3">
+
+<p>    The mapping operation involves applying function to successive
+    sets of arguments in which one argument is obtained from each
+    vector.
+</p>
+<p>
+    <code>mapgrid</code> accumulates the results into a vector. 
+</p>
+<p>
+    <code>mapg</code> returns the first vector.  It is intended for side effects of
+    the function calls.
+</p>
+<p>
+    The function call results are coerced to <a href="#sec-5-2"><code>*float-type*</code></a>.
+</p>
+<p>
+    The vector type is determined by <a href="#sec-5-1"><code>*array-type*</code></a>.
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5-5" class="outline-3">
+<h3 id="sec-5-5"><span class="section-number-3">5.5</span> <code>mapgrid-xa1</code>, <code>mapgrid-xa2</code></h3>
+<div class="outline-text-3" id="text-5-5">
+
+
+
+</div>
+
+<div id="outline-container-5-5-1" class="outline-4">
+<h4 id="sec-5-5-1"><span class="section-number-4">5.5.1</span> Syntax</h4>
+<div class="outline-text-4" id="text-5-5-1">
+
+<ul>
+<li>(<b>mapgrid-ma</b> function &amp;rest arguments1) =&gt; result-vector
+</li>
+<li>(<b>mapgrid-ma-1</b> (function &amp;rest arguments2) &amp;rest vectors) =&gt; result-vector
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5-5-2" class="outline-4">
+<h4 id="sec-5-5-2"><span class="section-number-4">5.5.2</span> Arguments and values</h4>
+<div class="outline-text-4" id="text-5-5-2">
+
+<ul>
+<li><i>function</i> &ndash; a function designator or a lambda expression
+</li>
+<li><i>arguments1</i> &ndash; combination of scalars and vectors, vectors being marked with a
+      @! prefix
+</li>
+<li><i>arguments2</i> &ndash; scalars or dummy symbols prefixed by @!
+</li>
+<li><i>vectors</i> &ndash; one or more grid vectors
+</li>
+<li><i>result-vector</i> &ndash; a grid vector
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5-5-3" class="outline-4">
+<h4 id="sec-5-5-3"><span class="section-number-4">5.5.3</span> Description</h4>
+<div class="outline-text-4" id="text-5-5-3">
+
+<p>    The macros map <code>function</code> over vectors.  At each call, the
+    function's arguments are constructed from the scalar arguments and
+    successive vector elements.
+</p>
+<p>
+    The user tags the vectors to the macros by pre-pending the <code>@!</code>
+    prefix before each symbol name.
+</p>
+<p>
+    <code>arguments1</code> and <code>arguments2</code> cannot have s-expressions.  All
+    arguments must be existing variables.  S-expressions can be used
+    as part of the <code>vectors</code> argument to <code>mapgrid-ma</code>.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5-5-4" class="outline-4">
+<h4 id="sec-5-5-4"><span class="section-number-4">5.5.4</span> Examples</h4>
+<div class="outline-text-4" id="text-5-5-4">
+
+<p>    A couple examples using lists may explain the macros better
+</p>
+
+
+
+<pre class="src src-lisp">(mapgrid-ma #'expt 5d0 @!*V1*)
+</pre>
+
+<p>
+    =&gt; #m[1d0 5d0 25d0 125d0]
+</p>
+<p>
+    is equivalent to (using lists instead of grids)
+</p>
+
+
+<pre class="src src-lisp">(mapcar (<span style="color: #728a05;">lambda</span> (arg)
+          (expt 5d0 arg))
+        '(0d0 1d0 2d0 3d0))
+</pre>
+
+
+
+<pre class="src src-lisp">(mapgrid-ma-1 (expt @!a @!b) *V1* *V0*)
+</pre>
+
+<p>
+    =&gt; #m[0d0 11d0 144d0 2197d0]
+    is equivalent to
+</p>
+
+
+<pre class="src src-lisp">(mapcar (<span style="color: #728a05;">lambda</span> (x1 x0)
+          (expt x1 x2))
+        '(10d0 11d0 12d0 13d0)
+        ('0d0 1d0 2d0 3d0))    
+</pre>
+
+
+<p>
+    Now suppose that we did not have <b>v1</b> but had an s-expression
+    instead.  Then, we cannot use <code>mapgrid-ma</code>, but must use
+    <code>mapgrid-ma-1</code>
+</p>
+
+
+<pre class="src src-lisp">(mapgrid-ma-1 (expt 5d0 @!v1)
+             (make-grid `((,*array-type* 4) ,*float-type*)
+                        <span style="color: #728a05;">:initial-contents</span> '(0d0 1d0 2d0 3d0)))
+</pre>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-5-6" class="outline-3">
+<h3 id="sec-5-6"><span class="section-number-3">5.6</span> <code>mapgrid-man</code>, <code>mapgrid-man-1</code></h3>
+<div class="outline-text-3" id="text-5-6">
+
+
+</div>
+
+<div id="outline-container-5-6-1" class="outline-4">
+<h4 id="sec-5-6-1"><span class="section-number-4">5.6.1</span> Syntax</h4>
+<div class="outline-text-4" id="text-5-6-1">
+
+<ul>
+<li>(<b>mapgrid-man</b> function &amp;rest arguments) =&gt; result-vector
+</li>
+<li>(<b>mapgrid-man-1</b> (function &amp;rest arguments) &amp;rest vectors) =&gt;
+      result-vector
+</li>
+</ul>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5-6-2" class="outline-4">
+<h4 id="sec-5-6-2"><span class="section-number-4">5.6.2</span> Arguments and values</h4>
+<div class="outline-text-4" id="text-5-6-2">
+
+<ul>
+<li><i>function</i> &ndash; a function designator or a lambda form
+</li>
+<li><i>arguments</i> &ndash; a mixture of scalars and two vectors, the vectors
+      being marked with a @0 and @1 prefixes
+</li>
+<li><i>result-vector</i> &ndash; a Common Lisp or grid matrix
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5-6-3" class="outline-4">
+<h4 id="sec-5-6-3"><span class="section-number-4">5.6.3</span> Description</h4>
+<div class="outline-text-4" id="text-5-6-3">
+
+<p>    <code>mapgrid-man</code>, <code>mapgrid-man-1</code> performs a nested mapping with the
+    results stored in a matrix.  The first matrix row is obtained by
+    mapping the function over the @1 labeled vector, taking the remaining
+    arguments from the scalars, and first element of the @0 vector.
+    The following rows is obtained by repeating this scan, but in
+    successive scans taking successive elements of the @1 vector.
+</p>
+<p>
+    <i>Arguments</i> cannot be forms that evaluate into a scalar or vector.
+    They must be symbols whose value is a scalar or a vector.  
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-5-6-4" class="outline-4">
+<h4 id="sec-5-6-4"><span class="section-number-4">5.6.4</span> Examples</h4>
+<div class="outline-text-4" id="text-5-6-4">
+
+
+<p>
+    The following examples show calls of functions that require only
+    two arguments, and both are vectors:
+</p>
+
+
+
+<pre class="src src-lisp">(mapgrid-man (expt @0*v2* @1*V3*))
+</pre>
+
+<p>
+    =&gt; #m2[[10d0 11d0 12d0 13d0]
+    [100d0 121d0 144d0 169d0]
+</p>
+
+
+
+
+<pre class="src src-lisp">(mapgrid-man (expt @1*V2* @0*v3*))
+</pre>
+
+<p>
+    =&gt; #m[[10d0 100d0
+    [11d0 121d0]
+    [12d0 144d0]
+    [13d0 169d0]]
+</p>
+<p>
+    The macro can handle calls of mixed arguments, such as
+</p>
+
+
+<pre class="src src-lisp">(mapgrid-man (foo @0*v2* bar @1*V3*))
+</pre>
+
+<p>
+    where <code>bar</code> evaluates to a scalar.
+</p>
+
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Implementation notes</h2>
+<div class="outline-text-2" id="text-6">
+
+
+<p>
+  The philosophy was to take as much of the calling and documentation
+  conventions from Common Lisp and hyperspec as possible.
+</p>
+<p>
+  <code>lisp-unit</code> is used for function tests.  Almost all functions have
+  tests associated with them.  These tests also serve as documentation
+  regarding the function usage.  
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Todo</h2>
+<div class="outline-text-2" id="text-7">
+
+<ul>
+<li>Implement functionality to return compiled functions that will
+    accept mixed-kind arguments
+</li>
+<li>Investigate usage of the <code>once-only</code> macro to process scalar
+    arguments in the mixed argument macros.
+</li>
+<li>Clean-up code.  Some of it may contained remains of old
+    development.
+</li>
+<li>Investigate how to allow s-expressions as arguments to mapping
+    macros
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+
+<div id="postamble">
+<p class="date">Date: 2012-08-04 22:18:31 </p>
+<p class="author">Author: Mirko Vukovic</p>
+<p class="creator">Org version 7.8.03 with Emacs version 23</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+
+</div>
+</body>
+</html>
