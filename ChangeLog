@@ -1,0 +1,4 @@
+2012-09-27  Mirko Vukovic  <mirko.vukovic@us.tel.com>
+
+	* map-grid-utils.asd (#:map-grid-utils): Added documentation
+

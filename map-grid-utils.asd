@@ -2,9 +2,9 @@
 
 (asdf:defsystem #:map-grid-utils
   :serial t
-  :description "Describe map-grid-utils here"
-  :author "Your Name <your.name@example.com>"
-  :license "Specify license here"
+  :description "Functions and macros that facilitate mapping of functions over 1D grids (vectors)"
+  :author "Mirko Vukovic <mirko.vukovic@gmail.com>"
+  :license "not for re-use as yet"
   :depends-on ("alexandria"
 	       "iterate"
 	       "lisp-unit"
