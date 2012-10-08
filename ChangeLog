@@ -1,3 +1,35 @@
+2012-10-08  Mirko Vukovic  <mirko.vukovic@us.tel.com>
+
+	* README.org: Changed nomenclature.  Instead of ``kind''I now use
+	``rank'' (as tensor rank) to distinguish between scalars (rank 0),
+	vectors (rank 1), and matrices (rank 2)
+
+2012-10-07  Mirko Vukovic  <mirko.vukovic@us.tel.com>
+
+	* map-grid.lisp: The #m macro is causing compilation error:
+	"initial contents are NIL".  I use the standard #(...) instead of
+	#m(...)
+
+	* map-grid-mixed-args.lisp: Changed gref to aref in multiple
+	functions
+
+	* map-grid-utils-package-def.lisp: Added call to
+	(antik:make-user-package ...) to incorporate shaddowed symbols
+
+	* setup.lisp: Replaced *array-type* with grid's
+	*default-grid-type* and *float-type* with grid's
+	*default-element-type*
+	* map-grid-mixed-args.lisp: same as above
+	* map-grid.lisp: same as above
+
+	* map-grid-utils.asd (#:map-grid-utils): Changed system dependency
+	from gsd to antik.
+
+	* map-grid-mixed-args.lisp (pow-curry gcmap): Marked tests for
+	deletion since they use obsolete features
+
+	
+
 2012-09-27  Mirko Vukovic  <mirko.vukovic@us.tel.com>
 
 	* map-grid-utils.asd (#:map-grid-utils): Added documentation

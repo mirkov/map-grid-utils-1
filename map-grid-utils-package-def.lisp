@@ -1,7 +1,7 @@
 ;;;; package.lisp
 (in-package :cl-user)
 
-(defpackage #:map-grid-utils
+(defpackage :map-grid-utils
   (:use #:cl #:lisp-unit #:iterate
 	#:grid #:symbol-name-queries)
   (:import-from #:alexandria
@@ -9,3 +9,4 @@
   (:shadow #:lisp-unit :norm)
   (:shadow #:iterate :in))
 
+(antik:make-user-package :map-grid-utils)

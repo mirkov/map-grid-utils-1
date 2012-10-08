@@ -37,7 +37,7 @@ from the only marked arg.  The function calls fun on all the args.
     `(lambda (,marked-arg)
        (,fun ,@(nreverse clean-args)))))
 
-(define-test gcmap
+#+obsolete--gcmap-not-used-anymore(define-test gcmap
     (assert-expands 
      '(gmap (mcurry pow @!x y) vector)
      (gcmap (pow @!x y) vector)))
@@ -61,6 +61,7 @@ expands into
 (defun pow (x y)
   (expt x y))
 
+#+obsolete--pow-curry-not-used-anymore
 (define-test pow-curry
   ;; Loop over first variable
   (let ((y 2))
@@ -193,18 +194,18 @@ expands into
      :SOURCES
      (LIST
       (LIST *V0* NIL)
-      (LIST (MAKE-GRID `((,*ARRAY-TYPE* 4) ,*FLOAT-TYPE*)
+      (LIST (MAKE-GRID `((,*DEFAULT-GRID-TYPE* 4) ,*DEFAULT-ELEMENT-TYPE*)
 		       :INITIAL-CONTENTS (QUOTE (10D0 11D0 12D0 13D0)))
        NIL))
      :COMBINATION-FUNCTION
      (LAMBDA (X% Z%) (FUNCALL #'EXPT X% Y Z%)))
-   (mapgrid-ma-1 (expt @!x y @!z) *v0* (make-grid `((,*array-type* 4) ,*float-type*)
+   (mapgrid-ma-1 (expt @!x y @!z) *v0* (make-grid `((,*default-grid-type* 4) ,*default-element-type*)
 					       :initial-contents '(10d0 11d0 12d0 13d0))))
   ;; test numerical correctness when a vector argument is an
   ;; s-expression (same as for *v1*)
   (assert-numerical-equal
    (mapgrid #'expt *v0* *v1*)
-   (mapgrid-ma-1 (expt @!x @!z) *v0* (make-grid `((,*array-type* 4) ,*float-type*)
+   (mapgrid-ma-1 (expt @!x @!z) *v0* (make-grid `((,*default-grid-type* 4) ,*default-element-type*)
 					       :initial-contents '(10d0 11d0 12d0 13d0)))))
 
 (defmacro mapgrid-ma-1 ((function &rest arguments) &rest vector-arguments)
@@ -255,16 +256,16 @@ expands into
 	  (arg1% y))
      (let ((d0 (dim0 arg0%))
 	   (d1 (dim0 arg1%)))
-       (let ((res (make-grid (list (list *array-type* d0 d1)
-				   *float-type*))))
+       (let ((res (make-grid (list (list *default-grid-type* d0 d1)
+				   *default-element-type*))))
 	 (iter:iter
 	   (iter:for row :matrix-row-index res)
 	   (iter:iter
 	     (iter:for column  :matrix-column-index res)
-	     (setf (gref  res row column)
+	     (setf (aref  res row column)
 		   (funcall #'fun
-		    (gref arg0% row)
-		    (gref arg1% column)
+		    (aref arg0% row)
+		    (aref arg1% column)
 		    z))))
 	 res)))
    (mapgrid-man #'fun @0x @1y z))
@@ -274,16 +275,16 @@ expands into
 	  (arg1% x))
      (let ((d0 (dim0 arg0%))
 	   (d1 (dim0 arg1%)))
-       (let ((res (make-grid (list (list *array-type* d0 d1)
-				   *float-type*))))
+       (let ((res (make-grid (list (list *default-grid-type* d0 d1)
+				   *default-element-type*))))
 	 (iter:iter
 	   (iter:for row :matrix-row-index res)
 	   (iter:iter
 	     (iter:for column  :matrix-column-index res)
-	     (setf (gref  res row column)
+	     (setf (aref  res row column)
 		   (funcall #'fun
-		    (gref arg1% column)
-		    (gref arg0% row)
+		    (aref arg1% column)
+		    (aref arg0% row)
 		    z))))
 	 res)))
    (mapgrid-man #'fun @1x @0y z))
@@ -313,14 +314,14 @@ expands into
 	    (let ((cleaned-sym
 		   (intern (subseq (symbol-name arg) 2))))
 	      (setf arg0 cleaned-sym)
-	      (push '(gref arg0% row) funcall-args)))
+	      (push '(aref arg0% row) funcall-args)))
 	   ((@1-symbol-p arg)
 	    (assert (not arg1) ()
 		 (error "arg1, ~a already defined" arg1))
 	    (let ((cleaned-sym
 		   (intern (subseq (symbol-name arg) 2))))
 	      (setf arg1 cleaned-sym)
-	      (push '(gref arg1% column) funcall-args)))
+	      (push '(aref arg1% column) funcall-args)))
 	   (t (push arg funcall-args))))
 	  args)
     (setf funcall-args (nreverse funcall-args))
@@ -330,13 +331,13 @@ expands into
 	   (arg1% ,arg1))
        (let ((d0 (dim0 arg0%))
 	     (d1 (dim0 arg1%)))
-	 (let ((res (make-grid (list (list *array-type* d0 d1)
-				     *float-type*))))
+	 (let ((res (make-grid (list (list *default-grid-type* d0 d1)
+				     *default-element-type*))))
 	   (iter:iter
 	    (iter:for row :matrix-row-index res)
 	    (iter:iter
 	     (iter:for column  :matrix-column-index res)
-	       (setf (gref res row column)
+	       (setf (aref res row column)
 		     (funcall ,fun ,@funcall-args))))
 	   res)))))
 
@@ -347,16 +348,16 @@ expands into
 	  (y y))
      (let ((d0 (dim0 x))
 	   (d1 (dim0 y)))
-       (let ((res (make-grid (list (list *array-type* d0 d1)
-				   *float-type*))))
+       (let ((res (make-grid (list (list *default-grid-type* d0 d1)
+				   *default-element-type*))))
 	 (iter:iter
 	   (iter:for row :matrix-row-index res)
 	   (iter:iter
 	     (iter:for column  :matrix-column-index res)
-	     (setf (gref  res row column)
+	     (setf (aref  res row column)
 		   (fun
-		    (gref x row)
-		    (gref y column)
+		    (aref x row)
+		    (aref y column)
 		    z))))
 	 res)))
    (mapgrid-man-1 (fun @0x @1y z) x y))
@@ -385,7 +386,7 @@ The other arguments are passed unevaluated"
      ;; loop over args and create a cleaned up argument list by
      ;; stripping the @ tags.  At the same time, process the @-tagged
      ;; args as follows:
-     ;; - create a (gref ...) snippet that will be used to access
+     ;; - create a (aref ...) snippet that will be used to access
      ;;   their elements
      ;; - Make sure there is only one of @0 and @1 tags present.  This
      ;;   is done by examining contents of arg0 and arg1 which store
@@ -398,14 +399,14 @@ The other arguments are passed unevaluated"
 	    (let ((cleaned-sym
 		   (intern (subseq (symbol-name arg) 2))))
 	      (setf arg0 cleaned-sym)
-	      (push `(gref ,cleaned-sym row) funcall-args)))
+	      (push `(aref ,cleaned-sym row) funcall-args)))
 	   ((@1-symbol-p arg)
 	    (assert (not arg1) ()
 		 (error "arg1, ~a already defined" arg1))
 	    (let ((cleaned-sym
 		   (intern (subseq (symbol-name arg) 2))))
 	      (setf arg1 cleaned-sym)
-	      (push `(gref ,cleaned-sym column) funcall-args)))
+	      (push `(aref ,cleaned-sym column) funcall-args)))
 	   (t (push arg funcall-args))))
 	  args)
     (assert arg0 () "Vector 0 is undefined")
@@ -414,12 +415,12 @@ The other arguments are passed unevaluated"
 	   (,arg1 ,vec1))
        (let ((d0 (dim0 ,arg0))
 	     (d1 (dim0 ,arg1)))
-	 (let ((res (make-grid (list (list *array-type* d0 d1)
-				     *float-type*))))
+	 (let ((res (make-grid (list (list *default-grid-type* d0 d1)
+				     *default-element-type*))))
 	   (iter:iter
 	    (iter:for row :matrix-row-index res)
 	    (iter:iter
 	     (iter:for column  :matrix-column-index res)
-	       (setf (gref res row column)
+	       (setf (aref res row column)
 		     (,fun ,@(nreverse funcall-args)))))
 	   res)))))

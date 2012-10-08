@@ -1,10 +1,9 @@
 (in-package :map-grid-utils)
 
-
 (define-test map-one-grid
   (assert-numerical-equal
    #+clisp #(0d0 2d0 4d0 6d0)
-   #-clisp #m(0d0 2d0 4d0 6d0)
+   #-clisp #(0d0 2d0 4d0 6d0)
    (map-one-grid (lambda (arg)
 		   (* 2 arg))
 		 *v0*)))
@@ -12,7 +11,8 @@
 (defun map-one-grid (function grid)
   "Element-wise map FUNCTION over GRID, returning a grid
 
-*array-type* and float-type* determine the result type
+*default-grid-type* and *default-element-type* determine the result
+ type
 
 gmap specializes map-grid to use only the :element-function
 keyword"
@@ -23,13 +23,13 @@ keyword"
 (define-test map-several-grids
   (assert-numerical-equal
    #+clisp #(10d0 12d0 14d0 16d0)
-   #-clisp #m(10d0 12d0 14d0 16d0)
+   #-clisp #(10d0 12d0 14d0 16d0)
    (map-several-grids #'+ *v0* *v1*)))
 
 (defun map-several-grids (function &rest grids)
   "Element-wise Map `function' over `grids'
 
-*array-type* and float-type* determine the result type
+*default-grid-type* and *default-float-type* determine the result type
 
 gsmap specializes map-n-grids to use only
 the :combination-function keyword"
@@ -40,8 +40,8 @@ the :combination-function keyword"
      :sources  (mapcar #'list grids affis)
      :combination-function #'(lambda (&rest args)
 			       (apply function args))
-     :destination-specification `((,*array-type* ,@(dimensions (first grids)))
-				  ,*float-type*))))
+     :destination-specification `((,*default-grid-type* ,@(dimensions (first grids)))
+				  ,*default-element-type*))))
 
 (defun mapgrid (function grid &rest more-grids)
   "Apply FUNCTION to successive sets of arguments in which one

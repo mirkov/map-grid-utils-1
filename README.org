@@ -4,18 +4,20 @@
 
   This library provides several utility functions and macros on top of
   grid mapping functions ~map-grid~ and ~map-n-grids~ found in Liam
-  Healy's ~grid~ library.  They all operate on vectors (grid of rank
-  1), producing (with one exception) vectors.
+  Healy's ~grid~ package of the ~antik~ library.  They all operate on
+  vectors (grid of rank 1), producing (with one exception) vectors.
 
   These macros and functions are syntactic sugar: they facilitate
-  mapping of functions over vector arguments and mixed kind arguments
-  (combinations of vectors and scalars).
+  mapping of functions over all vector arguments and mixed rank
+  arguments (combinations of vectors and scalars).
 
   The macros and functions were in part motivated by facilities
   offered by matrix-oriented languages such as IDL (I am not familiar
   with MATLAB's capabilities).  The utilities do not fully mimic their
   syntax.  Instead, I tried to offer adequate functionality while
-  conforming to Common Lisp coding and usage conventions.
+  conforming to Common Lisp coding and usage conventions.  The symbol
+  tagging convention used in the macros is motivated by macros found
+  in Doug Hoyte's [[letoverlambda.com][Let Over Lambda]].
 
   The following table summarizes the macros and functions (F/M refer
   to functions or macros respectively):
@@ -31,7 +33,6 @@
   modifications.  Thus, when using it, it is wise to specify the
   version of the library.
   
-
 * Grid types
 
   The library operates on CL arrays and ~grid~ foreign-arrays of
@@ -44,11 +45,11 @@
   They map a function over their arguments, which are all vectors.
 
   
-
-* Mapping macros over mixed kind arguments
+* Mapping macros over mixed rank arguments
 
   Two macro families allow for mapping a function of several arguments
-  over a mix of scalars and vectors (we refer to this as kinds).
+  over a mix of scalars and vectors (we refer to this a mixed rank:
+  scalars are of rank 0, vectors of rank 1, and matrices of rank 2).
 
 ** ~mapgrid-ma~ or ~mapgrid-ma-1~ macros
 
@@ -61,12 +62,12 @@
 
    With these macros, the function mapped over two /vectors/ ~grid-0~
    and ~grid-1~ returns a /matrix/.  A matrix element /ij/ is result
-   of the function call on /grid-0_i/ and /grid-1_j/.  Again
-   ~mapgrid-man~ and ~mapgrid-man-1~ offer the same functionality but
-   with a slightly different interface.  This kind of mapping is not
-   provided by IDL as far as I know.
+   of the function call on /grid-0_i/ and /grid-1_j/.  This kind of
+   mapping is not provided by IDL as far as I know.
 
-** Interface to mixed-kind mappings
+   The character "n" in the macro name refers to "nested" mapping.
+
+** Interface to mixed-rank mappings
 
    In IDL, a call to a function ~f(x,y,z)~ can contain a mixture of
    scalars and (congruent) vectors or arrays.  The underlying
@@ -80,7 +81,7 @@
    "@0", "@1" before the vector names.  The macro code removes these
    prefixes and generates the variable names.  This is discussed next.
 
-** Specifying mixed-kind mapping arguments
+** Specifying mixed-rank mapping arguments
 
    We restrict whether the arguments are variables or s-expressions.
    The following discussion uses ~mapgrid-ma[-1]~ as example, but
@@ -92,7 +93,7 @@
 	(mapgrid-man #'foo a @!b c @!d)
    #+END_SRC
    Here ~a~ and ~d~ are scalar variables or s-expressions and ~b~ and
-   ~d~ are congruent vectors.
+   ~d~ are congruent vectors (of same length)
 
    If we wanted to use s-expressions instead of vectors, we would
    instead use ~mapgrid-man-1~:
@@ -116,10 +117,10 @@
 
    
    Scalar arguments must always be variables, never s-expressions.
+   This restriction may be removed in the future.
    
 
    
-
 * ~map-grid-utils~ dictionary
 
 ** Variable ~*array-type*~
@@ -302,17 +303,17 @@
     #+BEGIN_SRC lisp
 (mapgrid-man (expt @0*v2* @1*V3*))
     #+END_SRC
-    => #m2[[10d0 11d0 12d0 13d0]
-    [100d0 121d0 144d0 169d0]
+    => #2A((10d0 11d0 12d0 13d0)
+    (100d0 121d0 144d0 169d0))
     
 
     #+BEGIN_SRC lisp
 (mapgrid-man (expt @1*V2* @0*v3*))
     #+END_SRC
-    => #m[[10d0 100d0
-    [11d0 121d0]
-    [12d0 144d0]
-    [13d0 169d0]]
+    => #2A((10d0 100d0)
+    (11d0 121d0)
+    (12d0 144d0)
+    (13d0 169d0))
 
     The macro can handle calls of mixed arguments, such as
     #+BEGIN_SRC lisp
@@ -327,6 +328,8 @@
   The philosophy was to take as much of the calling and documentation
   conventions from Common Lisp and hyperspec as possible.
 
+  The variable tagging is from Doug Hoyte's [[http://letoverlambda.com][Let over Lambda]] book.
+
   ~lisp-unit~ is used for function tests.  Almost all functions have
   tests associated with them.  These tests also serve as documentation
   regarding the function usage.  
@@ -335,7 +338,7 @@
 
 * Todo
   - Implement functionality to return compiled functions that will
-    accept mixed-kind arguments
+    accept mixed-rank arguments
   - Investigate usage of the ~once-only~ macro to process scalar
     arguments in the mixed argument macros.
   - Clean-up code.  Some of it may contained remains of old
