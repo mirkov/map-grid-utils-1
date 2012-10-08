@@ -290,14 +290,14 @@ expands into
    (mapgrid-man #'fun @1x @0y z))
   ;; test numerical values of expansion
   (assert-numerical-equal
-   #+clisp #2A((1.0d0 10.0d0 100.0d0 1000.0d0)
+   #2A((1.0d0 10.0d0 100.0d0 1000.0d0)
 	       (1.0d0 11.0d0 121.0d0 1331.0d0)
 	       (1.0d0 12.0d0 144.0d0 1728.0d0)
 	       (1.0d0 13.0d0 169.0d0 2197.0d0))
    (mapgrid-man #'expt @0*v1* @1*v0*))
   ;; test numerical values of expansion with reversed arguments
   (assert-numerical-equal
-   #+clisp #2A((1.0d0 1.0d0 1.0d0 1.0d0)
+   #2A((1.0d0 1.0d0 1.0d0 1.0d0)
 	       (10.0d0 11.0d0 12.0d0 13.0d0)
 	       (100.0d0 121.0d0 144.0d0 169.0d0)
 	       (1000.0d0 1331.0d0 1728.0d0 2197.0d0))

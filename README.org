@@ -143,6 +143,9 @@
     - 'cl:array -- return a common-lisp vector or array
     - 'grid:foreign-array -- a foreign array
 
+      
+    This variable is imported from antik's ~grid~ package.
+
 ** Variable ~*default-element-type*~
    :PROPERTIES:
    :ID:       wughcmm0etf0
@@ -155,16 +158,18 @@
     'DOUBLE-FLOAT
 
 *** Description
-    The value of ~*default-element-type*~ has effect on the type of float that
-    vectors created by ~mapgrid~ and ~mapg~ will contain.  The allowed
-    values are
-    - t -- any type
+    The value of ~*default-element-type*~ has effect on the type of
+    float that vectors created by ~mapgrid~ and ~mapg~ will contain.
+    The allowed values are those supported by your common lisp
+    implementation, such as:
     - 'float -- a single float
     - 'double-float -- a double float
 
       
     The 'double-float type is mandatory for vectors that will be used as
     arguments to GSLL's functions.
+
+    This variable is imported from antik's ~grid~ package.
     
 ** Variables ~*v1*~, ~*v2*~, ~*v3*~
 
@@ -334,8 +339,30 @@
   tests associated with them.  These tests also serve as documentation
   regarding the function usage.  
 
-  
 
+* Testing
+  The development and testing is done on SBCL on Linux and Clisp on
+  Cygwin on Windows
+  
+* Notes on Antik compilation on my machines
+
+  I had to make a few changes to Antik in order to run on my
+  machines.  On SBCL
+  - Added ~aref~ to list of shadowed symbols
+  - Specified ~cl:array~ in ~formatting-test-grid~ function in
+    ~antik/tests/format-grid.lisp~
+
+    
+  On Clisp
+  - Added ~second~, ~fifth~, ~tenth~, ~rem~ to list of shadowed
+    symbols
+  - In various places used ~cl:second~ instead of ~second~
+    
+    
+  I submitted the Clisp related modifications to antik's maintainer
+  for review.
+
+  
 * Todo
   - Implement functionality to return compiled functions that will
     accept mixed-rank arguments

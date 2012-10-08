@@ -8,7 +8,7 @@
   :depends-on ("alexandria"
 	       "iterate"
 	       "lisp-unit"
-               "foreign-array"
+               #+foreign-array-included-in-antik "foreign-array"
                "antik"
 	       "symbol-name-queries")
   :components ((:file "map-grid-utils-package-def")

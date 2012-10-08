@@ -3,7 +3,7 @@
 
 (defpackage :map-grid-utils
   (:use #:cl #:lisp-unit #:iterate
-	#:grid #:symbol-name-queries)
+        #:symbol-name-queries)
   (:import-from #:alexandria
 		:symbolicate)
   (:shadow #:lisp-unit :norm)

@@ -1,5 +1,24 @@
 2012-10-08  Mirko Vukovic  <mirko.vukovic@us.tel.com>
 
+	* map-grid-utils.asd (#:map-grid-utils): Removed explicit
+	dependency on foreign-array, as it shipps with antik
+
+	* map-grid.lisp (mapg): Fixed bug in destination-specification.  I
+	hard-coded an incorrect destination array type.  Now I use
+	cl:array for array type, and t for element type.  I removed all
+	specializers no CLISP.  All tests are done using CL arrays.
+
+	* map-grid-mixed-args.lisp (mapgrid-man-1): Removed specializers
+	for clisp in the two assertions that compared the numercial values
+	of arrays.  These tests work on sbcl as well.
+
+	* README.org: Fixed *default-grid-type* and *default-element-type*
+	documentation.
+
+	* map-grid-utils-package-def.lisp (:map-grid-utils): Removed :grid
+	from :use list in package def, as it will be imported via
+	antik:make-user-package
+
 	* README.org: Changed nomenclature.  Instead of ``kind''I now use
 	``rank'' (as tensor rank) to distinguish between scalars (rank 0),
 	vectors (rank 1), and matrices (rank 2)

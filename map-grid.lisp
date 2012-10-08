@@ -1,9 +1,9 @@
+
 (in-package :map-grid-utils)
 
 (define-test map-one-grid
   (assert-numerical-equal
-   #+clisp #(0d0 2d0 4d0 6d0)
-   #-clisp #(0d0 2d0 4d0 6d0)
+   #(0d0 2d0 4d0 6d0)
    (map-one-grid (lambda (arg)
 		   (* 2 arg))
 		 *v0*)))
@@ -22,8 +22,7 @@ keyword"
 
 (define-test map-several-grids
   (assert-numerical-equal
-   #+clisp #(10d0 12d0 14d0 16d0)
-   #-clisp #(10d0 12d0 14d0 16d0)
+   #(10d0 12d0 14d0 16d0)
    (map-several-grids #'+ *v0* *v1*)))
 
 (defun map-several-grids (function &rest grids)
@@ -59,7 +58,7 @@ FUNCTION"
     (assert-numerical-equal
      *v0*
      (mapg #'(lambda (arg1 arg2)
-	       (declare (ingore arg2))
+	       (declare (ignore arg2))
 	       (push arg1 acc))
 	   *v0* *v1*))
     (assert-numerical-equal '(3 2 1 0) acc)))
@@ -73,8 +72,12 @@ FUNCTION"
 argument is obtained from each grid.  The GRID argument is returned.
 
 This map is used for the function's side effects.  It is modeled after
-MAPC")
-  (:method ((function function) (vector #+clisp vector #+sbcl mvector)
+MAPC
+
+We use MAP-N-GRIDS for mapping.  This will produce a result that we
+discard.  I specify the result as a CL array of default element type
+T")
+  (:method ((function function) (vector vector)
 	    &rest more-vectors)
     (let* ((vectors (cons vector more-vectors))
 	   (affis (mapcar #'grid::affi vectors)))
@@ -84,6 +87,6 @@ MAPC")
 		   :combination-function #'(lambda (&rest args)
 					     (apply function args)
 					     nil)
-		   :destination-specification `((array ,@(dimensions vector))
+		   :destination-specification `((cl:array ,@(dimensions vector))
 						t))
       vector)))
