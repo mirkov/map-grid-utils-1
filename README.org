@@ -344,6 +344,11 @@
   The development and testing is done on SBCL on Linux and Clisp on
   Cygwin on Windows
   
+
+* Issues
+  The test [[file:map-grid-mixed-args.lisp::(define-test%20mapgrid-man-1][mapgrid-man-1]] throws an error.  But when it is recompiled
+  manually, all tests pass.
+
 * Notes on Antik compilation on my machines
 
   I had to make a few changes to Antik in order to run on my

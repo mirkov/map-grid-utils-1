@@ -1,5 +1,9 @@
 2012-10-08  Mirko Vukovic  <mirko.vukovic@us.tel.com>
 
+	* README.org: Added "Issues" section with one entry: The test
+	"mapgrid-man-1" throws an error.  But when it is recompiled
+	manually, all tests pass.
+
 	* map-grid-utils.asd (#:map-grid-utils): Removed explicit
 	dependency on foreign-array, as it shipps with antik
 
