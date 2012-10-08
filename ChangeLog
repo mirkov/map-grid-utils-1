@@ -3,6 +3,9 @@
 	* README.org: Changed nomenclature.  Instead of ``kind''I now use
 	``rank'' (as tensor rank) to distinguish between scalars (rank 0),
 	vectors (rank 1), and matrices (rank 2)
+	Replaced *array-type* with grid's
+	*default-grid-type* and *float-type* with grid's
+	*default-element-type*
 
 2012-10-07  Mirko Vukovic  <mirko.vukovic@us.tel.com>
 

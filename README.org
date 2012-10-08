@@ -37,7 +37,7 @@
 
   The library operates on CL arrays and ~grid~ foreign-arrays of
   rank 1.  We refer to both types as grids or vectors.  The result
-  type is determined by [[id:4fe2plm0etf0][~*array-type*~]].
+  type is determined by [[id:4fe2plm0etf0][~*default-grid-type*~]].
 
 * Function counterparts to ~mapcar~ and ~mapc~
 
@@ -123,7 +123,7 @@
    
 * ~map-grid-utils~ dictionary
 
-** Variable ~*array-type*~
+** Variable ~*default-grid-type*~
    :PROPERTIES:
    :ID:       4fe2plm0etf0
    :END:
@@ -132,18 +132,18 @@
     a symbol
 
 *** Initial value
-    'array
+    'cl:array
 
 *** Description
     :PROPERTIES:
     :ID:       8if9yrn0ltf0
     :END:
-    The value of ~*array-type*~ has effect on the type of vector that
+    The value of ~*default-grid-type*~ has effect on the type of vector that
     ~mapgrid~ and ~mapg~ will return.  The allowed values are:
-    - 'array -- return a common-lisp vector or array
+    - 'cl:array -- return a common-lisp vector or array
     - 'grid:foreign-array -- a foreign array
 
-** Variable ~*float-type*~
+** Variable ~*default-element-type*~
    :PROPERTIES:
    :ID:       wughcmm0etf0
    :END:
@@ -155,7 +155,7 @@
     'DOUBLE-FLOAT
 
 *** Description
-    The value of ~*float-type*~ has effect on the type of float that
+    The value of ~*default-element-type*~ has effect on the type of float that
     vectors created by ~mapgrid~ and ~mapg~ will contain.  The allowed
     values are
     - t -- any type
@@ -178,7 +178,7 @@
       
       
     The vector type (~array~ or ~grid:foreign-array~) depends on the value
-    stored in ~*array-type*~.
+    stored in ~*default-grid-type*~.
 
 *** Description
     Variables used for testing and examples.  They are /not/ exported.
@@ -203,9 +203,9 @@
     ~mapg~ returns the first vector.  It is intended for side effects of
     the function calls.
 
-    The function call results are coerced to [[id:wughcmm0etf0][~*float-type*~]].
+    The function call results are coerced to [[id:wughcmm0etf0][~*default-element-type*~]].
 
-    The vector type is determined by [[id:4fe2plm0etf0][~*array-type*~]].
+    The vector type is determined by [[id:4fe2plm0etf0][~*default-grid-type*~]].
 
 ** ~mapgrid-xa1~, ~mapgrid-xa2~
 
@@ -265,7 +265,7 @@
     ~mapgrid-ma-1~
     #+BEGIN_SRC lisp
       (mapgrid-man-1 (expt 5d0 @!v1)
-                   (make-grid `((,*array-type* 4) ,*float-type*)
+                   (make-grid `((,*default-grid-type* 4) ,*default-element-type*)
                               :initial-contents '(0d0 1d0 2d0 3d0)))
     #+END_SRC
 
