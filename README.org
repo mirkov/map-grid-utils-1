@@ -234,7 +234,7 @@
     The user tags the vectors to the macros by pre-pending the ~@!~
     prefix before each symbol name.
 
-    ~arguments1~ and ~arguments2~ cannot have s-expressions.  All
+    ~arguments1~ and ~arguments2~ cannot be s-expressions.  All
     arguments must be existing variables.  S-expressions can be used
     as part of the ~vectors~ argument to ~mapgrid-ma~.
 

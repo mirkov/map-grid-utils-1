@@ -1,3 +1,9 @@
+2012-10-28  Mirko Vukovic  <mirko.vukovic@us.tel.com>
+
+	* map-grid.lisp: Added export statement
+
+	* map-grid-mixed-args.lisp: Added export statement
+
 2012-10-08  Mirko Vukovic  <mirko.vukovic@us.tel.com>
 
 	* README.org: Added "Issues" section with one entry: The test

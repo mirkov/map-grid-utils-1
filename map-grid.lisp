@@ -1,6 +1,8 @@
 
 (in-package :map-grid-utils)
 
+(export '(mapgrid mapg))
+
 (define-test map-one-grid
   (assert-numerical-equal
    #(0d0 2d0 4d0 6d0)

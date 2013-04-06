@@ -1,5 +1,7 @@
 (in-package #:map-grid-utils)
 
+(export '(mapgrid-ma mapgrid-ma-1 mapgrid-man mapgrid-man-1))
+
 
 (define-test mcurry
  (assert-expands
